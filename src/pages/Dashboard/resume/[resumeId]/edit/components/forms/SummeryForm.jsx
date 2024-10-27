@@ -14,7 +14,10 @@ const SummaryForm = ({enableNext}) => {
   const[loading,setLoading]=useState(false);
   const params=useParams();   
   const { toast } = useToast()
-  const prompt= 'Generate a 4-5 lines summery for the job title {jobTitle}.'
+  const prompt= 'Generate a 4-5 lines summery for the job title {jobTitle} in json format with field experienceLevel and summery with experience level for Fresher,Mid-Level,Experienced as an array of json objects'
+
+  const [aiSummery,setAiSummery]=useState();
+
   useEffect(()=>{
     summery&&setResumeInfo({
       ...resumeInfo,
@@ -22,12 +25,14 @@ const SummaryForm = ({enableNext}) => {
     })
   },[summery])
 
+
   const generateSummeryFromAi=async()=>{
     setLoading(true)
     const Prompt= prompt.replace('{jobTitle}',resumeInfo?.jobTitle)
     console.log(Prompt)
     const result= await chatSession.sendMessage(Prompt);
     console.log(result.response.text())
+    setAiSummery(JSON.parse([result.response.text()]))
     setLoading(false)
   }
   const onSave=(e)=>{
@@ -69,6 +74,18 @@ const SummaryForm = ({enableNext}) => {
         </div>
         </form>
         </div>
+
+        {aiSummery&& <div className='my-5'>
+            <h2 className='font-bold text-lg'>Suggestions</h2>
+            {aiSummery?.map((item,index)=>(
+                <div key={index} 
+                onClick={()=>setSummery(item?.summary)}
+                className='p-5 shadow-lg my-4 rounded-lg cursor-pointer'>
+                    <h2 className='font-bold my-1 text-primary'>Level: {item?.experienceLevel}</h2>
+                    <p>{item?.summary}</p>
+                </div>
+            ))}
+        </div>}
     </div>
   )
 }

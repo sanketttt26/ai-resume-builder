@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.rsw-ce ul {
+    list-style: disc;
+    padding-left: 2em;
+}
+
+.rsw-ce ol {
+    list-style: decimal;
+    padding-left: 2em;
+}
+
 :root{
     font-family: "Inter", sans-serif;
     font-style: normal;
